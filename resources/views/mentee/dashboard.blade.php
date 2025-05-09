@@ -55,77 +55,69 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12">
-                                <h4 class="mb-4">Mentor Lists</h4>
+            <div class="col-md-12">
+            <h4 class="mb-4">Matched Mentors</h4>
 
-                                <div class="card card-table">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover table-center mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>BASIC INFO</th>
-                                                        <th>Specialty</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($mentors as $mentor)
-                                                    @php
-                                                    $mentorshipExists = \App\Models\Mentorship::where('mentor_id',
-                                                    $mentor->id)
-                                                    ->where('mentee_id', auth()->id())
-                                                    ->exists();
-                                                    @endphp
-                                                    <tr>
-                                                        <td>
-                                                            <h2 class="table-avatar">
-                                                                <img src="{{ asset('storage/'.$mentor->image) }}"
-                                                                    alt="Mentor Image" class="avatar-img rounded-circle"
-                                                                    style="width:30px; height:30px; border-radius:50%;">
-                                                                {{ $mentor->name }}
-                                                            </h2>
-                                                        </td>
-                                                        <td>{{ $mentor->area_of_interest }}</td>
-                                                        <td class="text-center">
-                                                            <button
-                                                                class="btn btn-sm bg-info-light toggle-mentor {{ $mentorshipExists ? 'selected' : '' }}"
-                                                                data-mentor-id="{{ $mentor->id }}">
-                                                                <span
-                                                                    class="spinner-border spinner-border-sm text-light d-none"
-                                                                    role="status"></span>
-                                                                <i
-                                                                    class="far {{ $mentorshipExists ? 'fa-eye-slash' : 'fa-eye' }} mentor-toggle-icon ml-2"></i>
-                                                                <span class="button-text">
-                                                                    {{ $mentorshipExists ? 'Unselect' : 'Choose Mentor' }}
-                                                                </span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
+        <div class="card card-table">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0">
+                        <thead>
+                            <tr>
+                                <th>BASIC INFO</th>
+                                <th>Mentor Specialty</th>
+                                <th>Matched Interest</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @forelse ($mentors as $mentor)
+                        <tr>
+                        <td>
+                            <h2 class="table-avatar d-flex align-items-center">
+                                <img src="{{ $mentor->image && file_exists(public_path('storage/' . $mentor->image)) 
+                                    ? asset('storage/' . $mentor->image) 
+                                    : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}"
+                                    alt="Mentor Image"
+                                    class="avatar-img rounded-circle mr-2"
+                                    style="width: 30px; height: 30px; object-fit: cover;">
+                                {{ $mentor->name }}
+                            </h2>
+                        </td>
+                        <td>
+                            {{ is_array($mentor->interests) ? implode(', ', $mentor->interests) : $mentor->interests }}
+                        </td>
+                        <td>
+                            {{ $mentor->matched_interest ?? 'N/A' }}
+                        </td>
+                        <td>
+                            @php
+                                $status = $mentor->mentorship_status ?? 'pending';
+                                $badgeClass = match($status) {
+                                    'accepted' => 'badge-success',
+                                    'pending' => 'badge-warning',
+                                    'rejected' => 'badge-danger',
+                                    default => 'badge-secondary'
+                                };
+                            @endphp
+                            <span class="badge {{ $badgeClass }}">{{ ucfirst($status) }}</span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No mentors matched yet.</td>
+                    </tr>
+                    @endforelse
 
-
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-
+                        
+                        </tbody>
+                    </table>
                 </div>
-
             </div>
-
         </div>
-        <!-- /Page Content -->
 
     </div>
-    <!-- /Main Wrapper -->
+</div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {

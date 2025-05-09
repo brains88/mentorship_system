@@ -12,7 +12,9 @@
 <div class="profile-sidebar">
     <div class="user-widget">
         <div class="pro-avatar">
-            <img src="{{ asset('storage/'.auth()->user()->image) }}" class="img-responsive"
+            <img src="{{ auth()->user()->image && file_exists(public_path('storage/' . auth()->user()->image)) 
+                                                            ? asset('storage/' . auth()->user()->image) 
+                                                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}" class="img-responsive"
                 alt="{{auth()->user()->name}}" style="width:100px; height:100px; border-radius:50%;">
         </div>
         <div class="user-info-cont">

@@ -9,7 +9,11 @@ class User extends Authenticatable
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'password','mobile','area_of_interest','image','role'];
+    protected $fillable = ['name', 'email', 'password','mobile','interests','image','role'];
+
+    protected $casts = [
+        'interests' => 'array', // Automatically converts between JSON and PHP array
+    ];
 
     public function mentorships()
     {
@@ -25,4 +29,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'sender_id'); // Messages sent by the user
     }
+
 }

@@ -11,19 +11,23 @@ class DashboardController extends Controller
     //
     public function index()
     {
-        // Get the authenticated mentor's ID
-        $mentorId = auth()->id();
-
-        // Fetch all mentees who have chosen this mentor and the status of their mentorship request
-        $mentees = Mentorship::where('mentor_id', $mentorId)
-            ->with('mentee') // Assuming the relationship is defined
+        $mentor = auth()->user(); // Get the authenticated mentor
+        
+        // Fetch all mentees who have chosen this mentor with their mentorship status
+        $mentees = Mentorship::where('mentor_id', $mentor->id)
+            ->with(['mentee' => function($query) {
+                $query->select('id', 'name', 'email', 'interests','image');
+            }])
             ->get();
-
-        // Count the number of accepted appointments (mentorships with 'accepted' status)
+    
+        // Count accepted appointments
         $appointments = $mentees->where('status', 'accepted')->count();
-
-        // Return the view and pass the mentees and appointments to it
-        return view('mentor.dashboard', compact('mentees', 'appointments'));
+    
+        return view('mentor.dashboard', [
+            'mentees' => $mentees,
+            'appointments' => $appointments,
+            'mentorInterests' => $mentor->interests ?? [] // Pass mentor's interests to view
+        ]);
     }
 
     public function toggleStatus($id)

@@ -72,7 +72,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>BASIC INFO</th>
-                                                        <th>Specialty</th>
+                                                        <th>Mentee Interest</th>
                                                         <th>Status</th>
                                                         <th>Actions</th>
                                                     </tr>
@@ -91,32 +91,51 @@
                                                                 {{ $mentee->name }}
                                                             </h2>
                                                         </td>
-                                                        <td>{{ $mentee->area_of_interest }}</td>
+                                                        <td>
+                                                        @php
+                                                            // Get mentee's interests (ensure it's an array)
+                                                            $menteeInterests = is_array($mentorship->mentee->interests) 
+                                                                ? $mentorship->mentee->interests 
+                                                                : json_decode($mentorship->mentee->interests, true);
+                                                            
+                                                            // Find matching interests
+                                                            $matchingInterests = array_intersect(
+                                                                $menteeInterests ?? [],
+                                                                $mentorInterests ?? []
+                                                            );
+                                                        @endphp
+                                                        
+                                                        @if(!empty($matchingInterests))
+                                                            {{ implode(', ', $matchingInterests) }}
+                                                        @else
+                                                            No matching interests
+                                                        @endif
+                                                    </td>
                                                         <td>{{ ucfirst($mentorship->status) }}</td>
                                                         <td class="text-center">
                                                             <button class="btn btn-sm
-            @if ($mentorship->status == 'rejected')
-                bg-info-light
-            @elseif ($mentorship->status == 'accepted')
-                bg-danger-light
-            @elseif ($mentorship->status == 'pending')
-                bg-warning-light
-            @endif
-            toggle-status" data-mentorship-id="{{ $mentorship->id }}">
+                                                                @if ($mentorship->status == 'rejected')
+                                                                    bg-info-light
+                                                                @elseif ($mentorship->status == 'accepted')
+                                                                    bg-danger-light
+                                                                @elseif ($mentorship->status == 'pending')
+                                                                    bg-warning-light
+                                                                @endif
+                                                                toggle-status" data-mentorship-id="{{ $mentorship->id }}">
 
                                                                 <span
                                                                     class="spinner-border spinner-border-sm text-light d-none"
                                                                     role="status"></span>
 
                                                                 <i class="far
-            @if ($mentorship->status == 'rejected')
-                fa-check-circle
-            @elseif ($mentorship->status == 'accepted')
-                fa-times-circle
-            @else
-                fa-check-circle
-            @endif
-            mentor-toggle-icon ml-2"></i>
+                                                                    @if ($mentorship->status == 'rejected')
+                                                                        fa-check-circle
+                                                                    @elseif ($mentorship->status == 'accepted')
+                                                                        fa-times-circle
+                                                                    @else
+                                                                        fa-check-circle
+                                                                    @endif
+                                                                    mentor-toggle-icon ml-2"></i>
 
                                                                 <span class="button-text">
                                                                     @if ($mentorship->status == 'rejected')

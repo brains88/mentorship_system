@@ -35,17 +35,27 @@
                             <div class="">
                                 <div class=" text-center mb-3">
                                     <div>
-                                        <img src="{{ asset('storage/'.auth()->user()->image) }}" alt="User Image"
+                                        <img src="{{ auth()->user()->image && file_exists(public_path('storage/' . auth()->user()->image)) 
+                                                            ? asset('storage/' . auth()->user()->image) 
+                                                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}" alt="Mentor Image"
                                             class="avatar-img"
-                                            style="width:50%; height:20%; border: 2px solid #007bff; object-fit: cover;">
+                                            style="width:50%; height:20%; border: 1px solid #4CAF50; object-fit: cover;">
                                     </div>
                                 </div>
                                 <div class=" text-center mt-3">
-                                    <h4 class="usr-name mb-2">{{ auth()->user()->name }}</h4>
-                                    <p class=" mb-3 text-muted"><strong>Field:</strong>
-                                        {{ auth()->user()->area_of_interest }}</p>
-                                    <p class="mb-1"><strong>Email:</strong> {{ auth()->user()->email }}</p>
-                                    <p class=""><strong>Mobile:</strong> {{ auth()->user()->mobile }}</p>
+                                <div class="card p-3" style="border-color:#4CAF50">
+                                <h4 class="usr-name">{{ auth()->user()->name }}</h4>
+                                <p class="user-email text-muted mb-1">{{ auth()->user()->mobile }}</p>
+                                <p class="user-email text-muted mb-1">{{ auth()->user()->email }}</p>
+                                <p class="user-interests"  style="color:#4CAF50" >
+                                    Interests: 
+                                    @if (is_array(auth()->user()->interests))
+                                        {{ implode(', ', auth()->user()->interests) }}
+                                    @else
+                                        {{ auth()->user()->interests ?? 'N/A' }}
+                                    @endif
+                                </p>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +86,7 @@
                                 </div>
 
                                 <div id="password-change-alert" class="alert d-none mt-3" role="alert"></div>
-                                <button type="submit" class="btn btn-primary w-100">Change Password</button>
+                                <button type="submit" class="btn w-100 text-white" style="background-color:#4CAF50" >Change Password</button>
                                 <div class="mt-3 text-center text-muted" id="loading-message" style="display: none;">
                                     Updating...</div>
                             </form>

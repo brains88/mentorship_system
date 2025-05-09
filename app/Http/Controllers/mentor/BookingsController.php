@@ -19,6 +19,7 @@ class BookingsController extends Controller
 
         return view('mentor.bookings', compact('mentorships'));
     }
+    
     public function setTimeSlot(Request $request)
     {
         // Validate the input

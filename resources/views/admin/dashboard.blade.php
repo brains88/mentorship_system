@@ -88,7 +88,7 @@
                                                     <tr>
                                                         <th>BASIC INFO</th>
                                                         <th>Role</th>
-                                                        <th>Specialty</th>
+                                                        <th>Interest</th>
                                                         <th>Mobile</th>
                                                         <th>Email</th>
                                                         <th>Action</th>
@@ -99,14 +99,18 @@
                                                     <tr @if($user->role === 'mentor') class="striped" @endif>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <img src="{{ asset('storage/'.$user->image) }}"
+                                                                <img src="{{ $user->image && file_exists(public_path('storage/' . $user->image)) 
+                                                            ? asset('storage/' . $user->image) 
+                                                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}"
                                                                     alt="User Image" class="avatar-img rounded-circle"
                                                                     style="width:30px; height:30px; border-radius:50%;">
                                                                 {{ $user->name }}
                                                             </h2>
                                                         </td>
                                                         <td>{{ $user->role }}</td>
-                                                        <td>{{ $user->area_of_interest }}</td>
+                                                        <td>
+                                                            {{ is_array($user->interests) ? implode(', ', $user->interests) : $user->interests }}
+                                                        </td>
                                                         <td>{{ $user->mobile }}</td>
                                                         <td>{{ $user->email }}</td>
                                                         <td>{{ ucfirst($user->status) }}</td>

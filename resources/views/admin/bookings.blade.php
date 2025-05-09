@@ -61,7 +61,9 @@
                                                     <td>
                                                         <h2 class="table-avatar">
                                                             <a href="#" class="avatar avatar-sm me-2">
-                                                                <img src="{{ asset('storage/'.$mentorship->mentor->image) }}"
+                                                                <img src="{{ $mentorship->mentor->image && file_exists(public_path('storage/' . $mentorship->mentor->image)) 
+                                                            ? asset('storage/' . $mentorship->mentor->image) 
+                                                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}"
                                                                     alt="Mentor Image" class="avatar-img rounded-circle"
                                                                     style="width:30px; height:30px; border-radius:50%;">
                                                             </a>
@@ -73,7 +75,9 @@
                                                     <td>
                                                         <h2 class="table-avatar">
                                                             <a href="#" class="avatar avatar-sm me-2">
-                                                                <img src="{{ asset('storage/'.$mentorship->mentee->image) }}"
+                                                                <img src="{{ $mentorship->mentee->image && file_exists(public_path('storage/' . $mentorship->mentee->image)) 
+                                                            ? asset('storage/' . $mentorship->mentee->image) 
+                                                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}"
                                                                     alt="Mentee Image" class="avatar-img rounded-circle"
                                                                     style="width:30px; height:30px; border-radius:50%;">
                                                             </a>

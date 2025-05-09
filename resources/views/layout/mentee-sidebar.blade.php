@@ -16,8 +16,19 @@
                 alt="{{auth()->user()->name}}" style="width:100px; height:100px; border-radius:50%;">
         </div>
         <div class="user-info-cont">
-            <h4 class="usr-name">{{auth()->user()->name}}</h4>
-            <p class="mentor-type">{{auth()->user()->area_of_interest}}</p>
+        <div class="card p-3" style="border-color:#4CAF50">
+        <h4 class="usr-name">{{ auth()->user()->name }}</h4>
+        <p class="user-email text-muted mb-1">{{ auth()->user()->email }}</p>
+        <p class="user-interests"  style="color:#4CAF50" >
+            Interests: 
+            @if (is_array(auth()->user()->interests))
+                {{ implode(', ', auth()->user()->interests) }}
+            @else
+                {{ auth()->user()->interests ?? 'N/A' }}
+            @endif
+        </p>
+    </div>
+
         </div>
     </div>
     <div class="custom-sidebar-nav">

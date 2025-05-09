@@ -14,11 +14,23 @@ class DashboardController extends Controller
     //
     public function index()
     {
-        $mentors = User::where('role', 'mentor')->get();
-        $appointments = Mentorship::where('mentorships.mentee_id', auth()->id())->where('status', 'accepted')->count();
+        $mentorships = Mentorship::with('mentor')
+            ->where('mentee_id', auth()->id())
+            ->get();
+    
+        $mentors = $mentorships->map(function ($mentorship) {
+            $mentor = $mentorship->mentor;
+            $mentor->matched_interest = $mentorship->matched_interest;
+            $mentor->mentorship_status = $mentorship->status; // Add the status
+            return $mentor;
+        });
+    
+        $appointments = $mentorships->where('status', 'accepted')->count();
+    
         return view('mentee.dashboard', compact('mentors', 'appointments'));
     }
-
+    
+    
     public function toggleMentor($mentorId)
     {
         $menteeId = auth()->id(); // Assuming authentication

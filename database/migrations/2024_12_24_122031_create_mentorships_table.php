@@ -13,15 +13,20 @@ return new class extends Migration
     {
         Schema::create('mentorships', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('mentor_id');
-            $table->unsignedBigInteger('mentee_id');
-            $table->string('status')->default('pending'); // pending, accepted, rejected
+            $table->foreignId('mentor_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('mentee_id')->constrained('users')->onDelete('cascade');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'active', 'completed'])->default('pending');
+            $table->string('matched_interest'); // Track which interest caused the match
+            
+            // Add appointment fields
+            $table->date('appointment_date')->nullable();
+            $table->time('appointment_time')->nullable();
+            $table->time('end_time')->nullable();
+            
             $table->timestamps();
-        
-            $table->foreign('mentor_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('mentee_id')->references('id')->on('users')->onDelete('cascade');
+            
+            $table->unique(['mentor_id', 'mentee_id', 'matched_interest']);
         });
-        
     }
 
     /**

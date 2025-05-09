@@ -133,12 +133,20 @@
                                     <label class="focus-label">Mobile Number</label>
                                 </div>
 
-                                <div class="form-group form-focus" style="margin-bottom: 20px;">
-                                    <input type="text" name="special_field" class="form-control" placeholder=" "
-                                        required>
-                                    <label class="focus-label">Area of Interest</label>
+                                <div class="form-group form-focus" style="margin-bottom: 30px; position: relative;">
+                                <select name="interests[]" id="interests" class="form-control select2" multiple required>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Mobile Development">Mobile Development</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                                <option value="Machine Learning">Machine Learning</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                                <option value="Cloud Computing">Cloud Computing</option>
+                                <option value="UI/UX Design">UI/UX Design</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                                <option value="Entrepreneurship">Entrepreneurship</option>
+                                </select>
                                 </div>
-
                                 <div class="form-group form-focus" style="margin-bottom: 20px;">
                                     <input type="password" name="password" class="form-control" placeholder=" "
                                         required>
@@ -175,110 +183,226 @@
 
     <!-- Include Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Include Select2 CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <!-- Custom Script -->
-    <script>
-    document.getElementById('toggle-role').addEventListener('click', function(event) {
-        event.preventDefault();
+<style>
+/* Main container styling */
+.form-focus {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
 
-        const formTitle = document.getElementById('form-title'); // Form title element
-        const toggleText = this; // The toggle button
-        const specialInput = document.querySelector(
-            'input[name="special_field"]'); // Target the input field
-        const specialLabel = specialInput.closest('.form-group').querySelector(
-            '.focus-label'); // Get the associated label
-        const roleInput = document.getElementById('role'); // Hidden input for the role
+/* Select2 input box styling */
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    min-height: 45px;
+    padding: 5px 10px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
 
-        if (formTitle.textContent === 'Mentee Register') {
-            formTitle.textContent = 'Mentor Register';
-            specialLabel.textContent = "What's your program or Area of specialty";
-            toggleText.textContent = "I'm not a Mentor";
-            roleInput.value = "mentor"; // Set role to mentor
-        } else {
-            formTitle.textContent = 'Mentee Register';
-            specialLabel.textContent = "Area of Interest";
-            toggleText.textContent = "I'm not a Mentee";
-            roleInput.value = "mentee"; // Set role to mentee
+/* Selected tags styling - INSIDE the input */
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: -2px;
+    line-height: 1.5;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #e9f7ef;
+    border: 1px solid #c8e6d9;
+    border-radius: 3px;
+    color: #28a745;
+    padding: 2px 8px;
+    margin: 2px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+/* Remove button styling */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #28a745;
+    opacity: 0.7;
+    margin-right: 5px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+}
+
+/* Focus state */
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #28a745;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+
+.select2-container--open ~ .focus-label,
+.select2-container--focus ~ .focus-label,
+.has-selection ~ .focus-label {
+    opacity: 1;
+    top: -8px;
+}
+
+/* Placeholder text */
+.select2-search--inline .select2-search__field {
+    margin-top: 6px !important;
+    padding-left: 3px !important;
+    height: 26px !important;
+    color: #6c757d !important;
+}
+
+/* Make sure the input expands */
+.select2-container {
+    width: 100% !important;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: "Select 1-3 areas...",
+        allowClear: true,
+        width: '100%',
+        maximumSelectionLength: 3,
+        closeOnSelect: false
+    });
+
+    // Handle selection changes
+    $('#interests').on('change', function() {
+        var $container = $(this).closest('.form-focus');
+        var hasSelection = $(this).val() && $(this).val().length > 0;
+        $container.toggleClass('has-selection', hasSelection);
+    });
+
+    // Prevent selecting more than 3 options
+    $('#interests').on('select2:selecting', function(e) {
+        if ($(this).val() && $(this).val().length >= 3) {
+            alert('Maximum 3 areas can be selected');
+            e.preventDefault();
         }
     });
 
-
-    document.getElementById('registration-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        const form = this;
-        const formData = new FormData(form);
-        const formMessages = document.getElementById('form-messages');
-        const signupBtn = document.getElementById('signup-btn');
-        const spinner = document.getElementById('spinner');
-
-        // Clear previous messages
-        formMessages.textContent = '';
-        formMessages.innerHTML = '';
-        console.clear();
-
-        // Show spinner
-        spinner.style.display = 'inline-block';
-        signupBtn.disabled = true;
-
-        fetch("{{ route('register') }}", {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json', // Ensures Laravel returns JSON
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data); // Log response to console
-
-                // Handle success
-                if (data.success) {
-                    formMessages.innerHTML = `
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        ${data.message || 'Registration successful!'}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
-                    window.location.href = data.redirect_url || "{{ route('login') }}";
-                }
-                // Handle validation errors
-                else if (data.errors) {
-                    let errorList = '<ul>';
-                    for (const [field, messages] of Object.entries(data.errors)) {
-                        messages.forEach(message => {
-                            errorList += `<li>${message}</li>`;
-                        });
-                    }
-                    errorList += '</ul>';
-                    formMessages.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>There were some issues with your input</strong>${errorList}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
-                }
-                // Handle unexpected errors
-                else {
-                    formMessages.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        An unexpected error occurred. Please try again.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                formMessages.innerHTML = `
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    A network error occurred. Please try again.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-            })
-            .finally(() => {
-                // Hide spinner and re-enable button
-                spinner.style.display = 'none';
-                signupBtn.disabled = false;
-            });
+    // Validate minimum selection on form submission
+    $('form').on('submit', function(e) {
+        if (!$('#interests').val() || $('#interests').val().length < 1) {
+            alert('Please select at least 1 area of interest');
+            e.preventDefault();
+        }
     });
+
+    // Initialize label state if there are pre-selected values
+    if ($('#interests').val() && $('#interests').val().length > 0) {
+        $('#interests').closest('.form-focus').addClass('has-selection');
+    }
+});
+</script>
+</script>
+    <!-- Custom Script -->
+    <script>
+document.getElementById('toggle-role').addEventListener('click', function(event) {
+    event.preventDefault();
+    
+    const formTitle = document.getElementById('form-title');
+    const toggleText = this;
+    const interestsLabel = document.querySelector('#interests').closest('.form-group').querySelector('.focus-label');
+    const roleInput = document.getElementById('role');
+    
+    if (formTitle.textContent.trim() === 'Mentee Register') {
+        formTitle.textContent = 'Mentor Register';
+        interestsLabel.textContent = "What's your program or Area of specialty";
+        toggleText.textContent = "I'm not a Mentor";
+        roleInput.value = "mentor";
+    } else {
+        formTitle.textContent = 'Mentee Register';
+        interestsLabel.textContent = "Area of Interest (Select 1-3)";
+        toggleText.textContent = "I'm not a Mentee";
+        roleInput.value = "mentee";
+    }
+});
+
+    document.getElementById('registration-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const form = this;
+    const formData = new FormData(form);
+    const formMessages = document.getElementById('form-messages');
+    const signupBtn = document.getElementById('signup-btn');
+    const spinner = document.getElementById('spinner');
+    
+    // Clear previous messages
+    formMessages.innerHTML = '';
+    
+    // Validate interests selection
+    const interests = Array.from(document.querySelectorAll('#interests option:checked'));
+    if (interests.length < 1 || interests.length > 3) {
+        formMessages.innerHTML = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Please select 1-3 areas of interest.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+        return;
+    }
+    
+    // Show spinner
+    spinner.style.display = 'inline-block';
+    signupBtn.disabled = true;
+    
+    try {
+        const response = await fetch("{{ route('register') }}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            formMessages.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${data.message || 'Registration successful!'}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+            
+            // Redirect after a short delay
+            setTimeout(() => {
+                window.location.href = data.redirect_url || "{{ route('login') }}";
+            }, 1500);
+        } else {
+            // Handle validation errors
+            let errorMessage = 'An error occurred. Please try again.';
+            if (data.errors) {
+                errorMessage = Object.values(data.errors).flat().join('<br>');
+            } else if (data.message) {
+                errorMessage = data.message;
+            }
+            
+            formMessages.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${errorMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+        }
+    } catch (error) {
+        formMessages.innerHTML = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Network error. Please check your connection and try again.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    } finally {
+        spinner.style.display = 'none';
+        signupBtn.disabled = false;
+    }
+});
     </script>
 </body>
 

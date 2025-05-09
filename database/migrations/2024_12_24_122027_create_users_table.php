@@ -15,15 +15,25 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('mobile');
+            $table->string('mobile')->unique();
             $table->string('password');
-            $table->string('area_of_interest');
+            $table->json('interests')->nullable(); // Changed from area_of_interest
             $table->string('image')->nullable();
-            $table->string('role')->default('mentee'); // Possible values: mentor, mentee, admin
+            $table->enum('role', ['admin', 'mentor', 'mentee']);
+            $table->rememberToken();
             $table->timestamps();
+            
+            // Virtual column and its index
+            $table->string('interests_first')->virtualAs('JSON_UNQUOTE(JSON_EXTRACT(interests, "$[0]"))');
+            $table->index('interests_first', 'users_interests_index');
+            
+            // Add these new indexes
+            $table->index(['role']); // Index for role column
+            $table->index(['interests'], 'interests_index', 'BTREE'); // For MySQL 5.7+
         });
         
     }
+    
 
     /**
      * Reverse the migrations.

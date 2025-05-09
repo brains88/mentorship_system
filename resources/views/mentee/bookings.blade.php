@@ -57,9 +57,12 @@
                                                     <td>
                                                         <h2 class="table-avatar">
                                                             <a href="#" class="avatar avatar-sm me-2">
-                                                                <img src="{{ asset('storage/'.$mentorship->mentor_image) }}"
-                                                                    alt="Mentor Image" class="avatar-img rounded-circle"
-                                                                    style="width:30px; height:30px; border-radius:50%;">
+                                                            <img src="{{ $mentorship->image && file_exists(public_path('storage/' . $mentorship->image)) 
+                                                            ? asset('storage/' . $mentorship->image) 
+                                                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8XpWWRtPUjhZ7MuHF8i4KDIxQOxDfkGMxYw&s' }}"
+                                                            alt="Mentor Image"
+                                                            class="avatar-img rounded-circle mr-2"
+                                                            style="width: 30px; height: 30px; object-fit: cover;">
                                                             </a>
                                                             <a href="#">{{ $mentorship->mentor_name }}</a>
                                                         </h2>
