@@ -7,6 +7,7 @@ use App\Models\{User,Mentorship};
 use Illuminate\Http\Request;
 use Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 class RegisterController extends Controller
 {
     //
@@ -18,7 +19,8 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-    
+        //\Log::info('Request Data:', $request->all());
+
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
@@ -37,8 +39,6 @@ class RegisterController extends Controller
                     'interests' => 'Mentors must have exactly one area of interest'
                 ]);
             }
-    
-
 
             // Store profile image
             $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');

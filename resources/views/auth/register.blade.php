@@ -133,8 +133,8 @@
                                     <label class="focus-label">Mobile Number</label>
                                 </div>
 
-                                <div class="form-group form-focus" style="margin-bottom: 30px; position: relative;">
-                                <select name="interests[]" id="interests" class="form-control select2" multiple required>
+                               <div class="form-group form-focus" style="margin-bottom: 30px; position: relative;">
+                                 <select name="interests[]" id="interests" class="form-control select2" multiple required>
                                 <option value="Web Development">Web Development</option>
                                 <option value="Mobile Development">Mobile Development</option>
                                 <option value="Data Science">Data Science</option>
@@ -146,6 +146,7 @@
                                 <option value="Digital Marketing">Digital Marketing</option>
                                 <option value="Entrepreneurship">Entrepreneurship</option>
                                 </select>
+                                 <label class="focus-label">Area of Interest (Select 1-3)</label> 
                                 </div>
                                 <div class="form-group form-focus" style="margin-bottom: 20px;">
                                     <input type="password" name="password" class="form-control" placeholder=" "
@@ -189,10 +190,6 @@
 
 <style>
 /* Main container styling */
-.form-focus {
-    position: relative;
-    margin-bottom: 1.5rem;
-}
 
 /* Select2 input box styling */
 .select2-container--default .select2-selection--multiple {
@@ -243,12 +240,26 @@
 }
 
 
-.select2-container--open ~ .focus-label,
-.select2-container--focus ~ .focus-label,
-.has-selection ~ .focus-label {
-    opacity: 1;
-    top: -8px;
+.form-focus {
+    position: relative;
 }
+
+.form-focus .focus-label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.form-focus.select2-focused .focus-label,
+.form-focus.has-selection .focus-label {
+    top: -8px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
 
 /* Placeholder text */
 .select2-search--inline .select2-search__field {
@@ -264,8 +275,9 @@
 }
 </style>
 
-<script>
-$(document).ready(function() {
+    <!-- Custom Script -->
+    <script>
+        $(document).ready(function() {
     $('.select2').select2({
         placeholder: "Select 1-3 areas...",
         allowClear: true,
@@ -302,30 +314,35 @@ $(document).ready(function() {
         $('#interests').closest('.form-focus').addClass('has-selection');
     }
 });
-</script>
-</script>
-    <!-- Custom Script -->
-    <script>
-document.getElementById('toggle-role').addEventListener('click', function(event) {
-    event.preventDefault();
-    
-    const formTitle = document.getElementById('form-title');
-    const toggleText = this;
-    const interestsLabel = document.querySelector('#interests').closest('.form-group').querySelector('.focus-label');
-    const roleInput = document.getElementById('role');
-    
-    if (formTitle.textContent.trim() === 'Mentee Register') {
-        formTitle.textContent = 'Mentor Register';
-        interestsLabel.textContent = "What's your program or Area of specialty";
-        toggleText.textContent = "I'm not a Mentor";
-        roleInput.value = "mentor";
-    } else {
-        formTitle.textContent = 'Mentee Register';
-        interestsLabel.textContent = "Area of Interest (Select 1-3)";
-        toggleText.textContent = "I'm not a Mentee";
-        roleInput.value = "mentee";
-    }
+//Toggle role
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('toggle-role');
+    if (!toggle) return;
+
+    toggle.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        const formTitle = document.getElementById('form-title');
+        const toggleText = this;
+        const interestsLabel = document.querySelector('#interests')?.closest('.form-group')?.querySelector('.focus-label');
+        const roleInput = document.getElementById('role');
+
+        if (!formTitle || !interestsLabel || !roleInput) return;
+
+        if (formTitle.textContent.trim() === 'Mentee Register') {
+            formTitle.textContent = 'Mentor Register';
+            interestsLabel.textContent = "What's your program or Area of specialty";
+            toggleText.textContent = "I'm not a Mentor";
+            roleInput.value = "mentor";
+        } else {
+            formTitle.textContent = 'Mentee Register';
+            interestsLabel.textContent = "Area of Interest (Select 1-3)";
+            toggleText.textContent = "I'm not a Mentee";
+            roleInput.value = "mentee";
+        }
+    });
 });
+
 
     document.getElementById('registration-form').addEventListener('submit', async function(event) {
     event.preventDefault();
